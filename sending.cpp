@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QMutex>
 
+
 QMutex mutex1;
 
 Sending::Sending(server* srv, QObject* parent)
@@ -16,53 +17,77 @@ void Sending::Sending_Identifier() {
 
     connect(timer, &QTimer::timeout, this, [this]() {
         QMutexLocker locker(&mutex1);
-        QList<QTcpSocket*> sockets = m_server->getArray(); // Локальная копия
 
-        // for(auto soc_to_ckek : sockets){
-        //     qDebug() <<"Socket" <<  soc_to_ckek->socketDescriptor() << Qt::endl;
-        // }
+        // Получаем текущие сокеты из сервера
+        QList<QTcpSocket*> qlistSockets = m_server->getSocketFromServer();
+        std::vector<QTcpSocket*> sockets(qlistSockets.begin(), qlistSockets.end());
 
         locker.unlock();
 
+        // Проверяем, есть ли сокеты
+        if (sockets.empty()) return;
+
+        // Инициализация в первый раз
+        if (!first_run) {
+            Sockets = sockets;  // Копируем текущий список
+            Descriptor.resize(sockets.size());
+
+            // Заполняем дескрипторы
+            for (size_t i = 0; i < sockets.size(); i++) {
+                Descriptor[i] = sockets[i]->socketDescriptor();
+            }
+            first_run = true;
+        }
+
+        // Удаление сокетов, которые больше не актуальны
+        std::vector<QTcpSocket*> Sockets_To_Delete;
+
+        for (QTcpSocket* s : Sockets) {
+            if (std::find(sockets.begin(), sockets.end(), s) == sockets.end()) {
+                Sockets_To_Delete.push_back(s);
+            }
+        }
+
+        // Удаляем устаревшие сокеты
+        for (QTcpSocket* s : Sockets_To_Delete) {
+            auto it = std::remove(Sockets.begin(), Sockets.end(), s);
+            Sockets.erase(it, Sockets.end());
+            qDebug() << "Удаляем сокет:" << s->socketDescriptor();
+        }
+
+        // Обновляем список сокетов и дескрипторов
+        Sockets = sockets;
+        Descriptor.resize(sockets.size());
+
+        for (size_t i = 0; i < sockets.size(); i++) {
+            Descriptor[i] = sockets[i]->socketDescriptor();
+        }
+
+        qDebug() << "Текущий список сокетов:";
+        for (QTcpSocket* s : Sockets) {
+            qDebug() << s->socketDescriptor();
+        }
+
+        // Обработка отключённых сокетов (аналогично вашему коду)
         QList<QTcpSocket*> disconnectedSockets;
 
-        // Поиск отключённых сокетов
         for (QTcpSocket* socket : sockets) {
             if (socket->state() != QAbstractSocket::ConnectedState) {
                 disconnectedSockets.append(socket);
-
-                // Уведомление других клиентов
-                QByteArray dataToRemove;
-                QDataStream outToRemove(&dataToRemove, QIODevice::WriteOnly);
-                outToRemove.setVersion(QDataStream::Qt_6_0);
-
-                quintptr descriptorToDelete = socket->socketDescriptor();
-                qDebug()<<"desk :"<<descriptorToDelete;
-                QString identifierToRemove = QString("tOrEmUvE %1, %2")
-                                                 .arg(socket->peerAddress().toString())
-                                                 .arg(QString::number(descriptorToDelete));
-
-                outToRemove << identifierToRemove;
-
-                for (QTcpSocket* socketTarget : sockets) {
-                    if (socket != socketTarget) {
-                        socketTarget->write(dataToRemove);
-                    }
-                }
             }
         }
 
         // Удаление отключённых сокетов
         for (QTcpSocket* socket : disconnectedSockets) {
             locker.relock();
-            m_server->getArray().removeOne(socket); // Удаляем из оригинального списка
+            m_server->getSocketFromServer().removeOne(socket); // Удаляем из оригинального списка
             locker.unlock();
 
             socket->deleteLater();
             qDebug() << "Client disconnected, removing socket:" << socket->peerAddress().toString();
         }
 
-        // Отправка идентификаторов активным сокетам
+        // Отправка идентификаторов (аналогично вашему коду)
         for (QTcpSocket* socketTarget : sockets) {
             if (socketTarget->state() == QAbstractSocket::ConnectedState) {
                 for (QTcpSocket* socketToSend : sockets) {
@@ -86,5 +111,7 @@ void Sending::Sending_Identifier() {
         }
     });
 
-    timer->start();
+    timer->start(10000);  // Период 1 секунда
 }
+
+

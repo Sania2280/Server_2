@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QMutex>
+#include <QKeyEvent>
 
 #include "server.h"
 #include "server.h"
@@ -12,6 +13,7 @@
 class Sending : public QThread
 {
     Q_OBJECT
+    Q_WINSTRICT
 
 
 public:
@@ -21,9 +23,12 @@ public:
 
 private:
     server * m_server;
-signals:
-    // void Return_Identifier(QList<QTcpSocket*> return_identifier);
+    std::vector<qintptr> Descriptor;
+    std::vector<QTcpSocket*> Sockets;
 
+    bool first_run = false;
+
+protected:
 };
 
 #endif // SENDING_H

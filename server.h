@@ -13,7 +13,7 @@ class server : public QTcpServer {
 
 public:
     server();
-    QList<QTcpSocket*>& getArray() const;  // Объявление метода
+    QList<QTcpSocket*>& getSocketFromServer() const;  // Объявление метода
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;

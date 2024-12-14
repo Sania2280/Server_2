@@ -271,6 +271,8 @@ Makefile: ../../Server1.pro ../../../../Qt/6.7.2/mingw_64/mkspecs/win32-g++/qmak
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/resources_functions.prf \
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/resources.prf \
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/moc.prf \
+		../../../../Qt/6.7.2/mingw_64/mkspecs/features/win32/opengl.prf \
+		../../../../Qt/6.7.2/mingw_64/mkspecs/features/uic.prf \
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/qmake_use.prf \
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/file_copies.prf \
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/testcase_targets.prf \
@@ -279,6 +281,8 @@ Makefile: ../../Server1.pro ../../../../Qt/6.7.2/mingw_64/mkspecs/win32-g++/qmak
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/lex.prf \
 		../../Server1.pro \
 		../../../../Qt/6.7.2/mingw_64/lib/Qt6Network.prl \
+		../../../../Qt/6.7.2/mingw_64/lib/Qt6Widgets.prl \
+		../../../../Qt/6.7.2/mingw_64/lib/Qt6Gui.prl \
 		../../../../Qt/6.7.2/mingw_64/lib/Qt6Core.prl \
 		../../../../Qt/6.7.2/mingw_64/mkspecs/features/build_pass.prf
 	$(QMAKE) -o Makefile ../../Server1.pro -spec win32-g++ CONFIG+=debug CONFIG+=qml_debug
@@ -483,6 +487,8 @@ Makefile: ../../Server1.pro ../../../../Qt/6.7.2/mingw_64/mkspecs/win32-g++/qmak
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/resources_functions.prf:
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/resources.prf:
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/moc.prf:
+../../../../Qt/6.7.2/mingw_64/mkspecs/features/win32/opengl.prf:
+../../../../Qt/6.7.2/mingw_64/mkspecs/features/uic.prf:
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/qmake_use.prf:
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/file_copies.prf:
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/testcase_targets.prf:
@@ -491,6 +497,8 @@ Makefile: ../../Server1.pro ../../../../Qt/6.7.2/mingw_64/mkspecs/win32-g++/qmak
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/lex.prf:
 ../../Server1.pro:
 ../../../../Qt/6.7.2/mingw_64/lib/Qt6Network.prl:
+../../../../Qt/6.7.2/mingw_64/lib/Qt6Widgets.prl:
+../../../../Qt/6.7.2/mingw_64/lib/Qt6Gui.prl:
 ../../../../Qt/6.7.2/mingw_64/lib/Qt6Core.prl:
 ../../../../Qt/6.7.2/mingw_64/mkspecs/features/build_pass.prf:
 qmake: FORCE

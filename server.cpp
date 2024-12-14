@@ -37,7 +37,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
         qDebug()<< "Socket :"<<socket->peerPort();
 
         connect(socket, &QTcpSocket::readyRead, this, &server::slotsReadyRead);
-        // connect(socket, &QTcpSocket::disconnected, this, &server::handleDisconnection);
+        connect(socket, &QTcpSocket::disconnected, this, [&](){for(auto i:Sockets){qDebug()<<"From Server Descriptors" << i->socketDescriptor()<<Qt::endl;}});
        // connect(socket, &QTcpSocket::readyRead, this, &server::SendIdentificator);
         qDebug() << "Client connected, socket descriptor:" << socketDescriptor;
 
@@ -232,7 +232,7 @@ void server::Comunication(quintptr resiver, quintptr sender, QString text)
 
 }
 
-QList<QTcpSocket*>& server:: getArray() const  {
+QList<QTcpSocket*>& server:: getSocketFromServer() const  {
     QMutexLocker locker(&mutex);
     return Sockets;
 }
