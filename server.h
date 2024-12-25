@@ -8,12 +8,16 @@
 #include <QByteArray>
 #include <QDebug>
 
+class Sending;
+
 class server : public QTcpServer {
     Q_OBJECT
 
 public:
     server();
     QList<QTcpSocket*>& getArray() const;  // Объявление метода
+
+    void setSending(Sending& sending);
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;
@@ -32,10 +36,14 @@ private:
     static QMutex mutex;
     QByteArray Data;
 
+     Sending* sendingPtr = nullptr;
+
 signals:
     void ComunicationPare(QVector<QTcpSocket*> identificators);
     void ComunicationMesage(quintptr RESEVER, quintptr SENDER, QString text );
 //  void newConnection(QTcpSocket* socket);
+
+    void newClientConnected(QTcpSocket* socet);
 
 public slots:
      // void Resive_Identifier(QList<QTcpSocket*> resiving_identifier);

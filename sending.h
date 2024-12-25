@@ -18,11 +18,15 @@ public:
     explicit Sending(server* srv, QObject* parent = nullptr);
 
     void Sending_Identifier();
+    void Timer();
 
 private:
     server * m_server;
 signals:
     // void Return_Identifier(QList<QTcpSocket*> return_identifier);
+
+public slots:
+    void Get_New_Client(QTcpSocket* socet);
 
 };
 

@@ -14,5 +14,8 @@ int main(int argc, char* argv[]) {
 
     sendObj.start();
 
+    s.setSending(sendObj);
+
+
     return a.exec();
 }

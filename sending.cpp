@@ -88,3 +88,7 @@ void Sending::Sending_Identifier() {
 
     timer->start();
 }
+
+void Sending::Get_New_Client(QTcpSocket* socet){
+    qDebug()<<"Socket from server : " << socet->socketDescriptor();
+}

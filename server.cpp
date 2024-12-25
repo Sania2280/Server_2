@@ -1,9 +1,10 @@
 #include "server.h"
+#include "sending.h"
 #include <QDebug>
 #include <QTimer>
 #include<QStringBuilder>
 #include "qmutex.h"
-#include "qthread.h"
+
 
 
 QList<QTcpSocket*> server::Sockets;
@@ -26,6 +27,13 @@ server::server() {
     timer->start(1);*/ // Устанавливаем интервал в 5 секунд (5000 мс)
 }
 
+
+void server::setSending(Sending& sending) {
+    sendingPtr = &sending;
+    connect(this, &server::newClientConnected, sendingPtr, &Sending::Get_New_Client);
+}
+
+
 void server::incomingConnection(qintptr socketDescriptor) {
     QTcpSocket* socket = new QTcpSocket(this);
     if (socket->setSocketDescriptor(socketDescriptor)) {
@@ -40,6 +48,8 @@ void server::incomingConnection(qintptr socketDescriptor) {
         // connect(socket, &QTcpSocket::disconnected, this, &server::handleDisconnection);
        // connect(socket, &QTcpSocket::readyRead, this, &server::SendIdentificator);
         qDebug() << "Client connected, socket descriptor:" << socketDescriptor;
+
+         emit newClientConnected(socket);
 
     } /*else {
         delete socket; // Удаляем сокет, если не удалось установить дескриптор
