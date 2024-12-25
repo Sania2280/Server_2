@@ -8,6 +8,7 @@
 
 #include "../../../sending.h"
 #include <QtCore/qmetatype.h>
+#include <QtCore/QList>
 
 #include <QtCore/qtmochelpers.h>
 
@@ -39,7 +40,9 @@ constexpr auto qt_meta_stringdata_CLASSSendingENDCLASS = QtMocHelpers::stringDat
     "Get_New_Client",
     "",
     "QTcpSocket*",
-    "socet"
+    "socet",
+    "QList<QTcpSocket*>",
+    "Sockets_reciverd"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -60,10 +63,10 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSSendingENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   20,    2, 0x0a,    1 /* Public */,
+       1,    2,   20,    2, 0x0a,    1 /* Public */,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 3,    4,
+    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 5,    4,    6,
 
        0        // eod
 };
@@ -79,7 +82,8 @@ Q_CONSTINIT const QMetaObject Sending::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<Sending, std::true_type>,
         // method 'Get_New_Client'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<QTcpSocket *, std::false_type>
+        QtPrivate::TypeAndForceComplete<QTcpSocket *, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QList<QTcpSocket*>, std::false_type>
     >,
     nullptr
 } };
@@ -90,7 +94,7 @@ void Sending::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         auto *_t = static_cast<Sending *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->Get_New_Client((*reinterpret_cast< std::add_pointer_t<QTcpSocket*>>(_a[1]))); break;
+        case 0: _t->Get_New_Client((*reinterpret_cast< std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QList<QTcpSocket*>>>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -99,6 +103,8 @@ void Sending::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 0:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 1:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QList<QTcpSocket*> >(); break;
             case 0:
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
             }

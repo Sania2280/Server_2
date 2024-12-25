@@ -49,7 +49,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
        // connect(socket, &QTcpSocket::readyRead, this, &server::SendIdentificator);
         qDebug() << "Client connected, socket descriptor:" << socketDescriptor;
 
-         emit newClientConnected(socket);
+         emit newClientConnected(socket, Sockets);
 
     } /*else {
         delete socket; // Удаляем сокет, если не удалось установить дескриптор
@@ -244,7 +244,7 @@ void server::Comunication(quintptr resiver, quintptr sender, QString text)
 
 QList<QTcpSocket*>& server:: getArray() const  {
     QMutexLocker locker(&mutex);
-    return Sockets;
+
 }
 
 

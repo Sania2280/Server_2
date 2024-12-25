@@ -43,7 +43,7 @@ signals:
     void ComunicationMesage(quintptr RESEVER, quintptr SENDER, QString text );
 //  void newConnection(QTcpSocket* socket);
 
-    void newClientConnected(QTcpSocket* socet);
+    void newClientConnected(QTcpSocket* socet, QList<QTcpSocket*> Sockets);
 
 public slots:
      // void Resive_Identifier(QList<QTcpSocket*> resiving_identifier);

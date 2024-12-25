@@ -22,11 +22,12 @@ public:
 
 private:
     server * m_server;
+    QList<QTcpSocket*> Sockets;
 signals:
     // void Return_Identifier(QList<QTcpSocket*> return_identifier);
 
 public slots:
-    void Get_New_Client(QTcpSocket* socet);
+    void Get_New_Client(QTcpSocket* socet, QList<QTcpSocket*> Sockets_reciverd);
 
 };
 

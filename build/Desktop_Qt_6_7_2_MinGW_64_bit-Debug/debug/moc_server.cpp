@@ -49,6 +49,7 @@ constexpr auto qt_meta_stringdata_CLASSserverENDCLASS = QtMocHelpers::stringData
     "newClientConnected",
     "QTcpSocket*",
     "socet",
+    "Sockets",
     "slotsReadyRead",
     "Comunication"
 );
@@ -73,16 +74,16 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSserverENDCLASS[] = {
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
        1,    1,   44,    2, 0x06,    1 /* Public */,
        5,    3,   47,    2, 0x06,    3 /* Public */,
-      10,    1,   54,    2, 0x06,    7 /* Public */,
+      10,    2,   54,    2, 0x06,    7 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      13,    0,   57,    2, 0x08,    9 /* Private */,
-      14,    3,   58,    2, 0x08,   10 /* Private */,
+      14,    0,   59,    2, 0x08,   10 /* Private */,
+      15,    3,   60,    2, 0x08,   11 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
     QMetaType::Void, 0x80000000 | 6, 0x80000000 | 6, QMetaType::QString,    7,    8,    9,
-    QMetaType::Void, 0x80000000 | 11,   12,
+    QMetaType::Void, 0x80000000 | 11, 0x80000000 | 3,   12,   13,
 
  // slots: parameters
     QMetaType::Void,
@@ -111,6 +112,7 @@ Q_CONSTINIT const QMetaObject server::staticMetaObject = { {
         // method 'newClientConnected'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<QTcpSocket *, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QList<QTcpSocket*>, std::false_type>,
         // method 'slotsReadyRead'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'Comunication'
@@ -130,7 +132,7 @@ void server::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         switch (_id) {
         case 0: _t->ComunicationPare((*reinterpret_cast< std::add_pointer_t<QList<QTcpSocket*>>>(_a[1]))); break;
         case 1: _t->ComunicationMesage((*reinterpret_cast< std::add_pointer_t<quintptr>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<quintptr>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
-        case 2: _t->newClientConnected((*reinterpret_cast< std::add_pointer_t<QTcpSocket*>>(_a[1]))); break;
+        case 2: _t->newClientConnected((*reinterpret_cast< std::add_pointer_t<QTcpSocket*>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QList<QTcpSocket*>>>(_a[2]))); break;
         case 3: _t->slotsReadyRead(); break;
         case 4: _t->Comunication((*reinterpret_cast< std::add_pointer_t<quintptr>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<quintptr>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[3]))); break;
         default: ;
@@ -148,6 +150,8 @@ void server::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 2:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 1:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QList<QTcpSocket*> >(); break;
             case 0:
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QTcpSocket* >(); break;
             }
@@ -170,7 +174,7 @@ void server::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
             }
         }
         {
-            using _t = void (server::*)(QTcpSocket * );
+            using _t = void (server::*)(QTcpSocket * , QList<QTcpSocket*> );
             if (_t _q_method = &server::newClientConnected; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 2;
                 return;
@@ -224,9 +228,9 @@ void server::ComunicationMesage(quintptr _t1, quintptr _t2, QString _t3)
 }
 
 // SIGNAL 2
-void server::newClientConnected(QTcpSocket * _t1)
+void server::newClientConnected(QTcpSocket * _t1, QList<QTcpSocket*> _t2)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 QT_WARNING_POP

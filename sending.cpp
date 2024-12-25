@@ -8,10 +8,11 @@ QMutex mutex1;
 
 Sending::Sending(server* srv, QObject* parent)
     : QThread(parent), m_server(srv){
-    Sending::Sending_Identifier();
+    // Sending::Sending_Identifier();
 }
 
 void Sending::Sending_Identifier() {
+    qDebug()<<"ID";
     QTimer* timer = new QTimer(this);
 
     connect(timer, &QTimer::timeout, this, [this]() {
@@ -89,6 +90,63 @@ void Sending::Sending_Identifier() {
     timer->start();
 }
 
-void Sending::Get_New_Client(QTcpSocket* socet){
-    qDebug()<<"Socket from server : " << socet->socketDescriptor();
+void Sending::Get_New_Client(QTcpSocket* socket, QList<QTcpSocket *> Sockets_reciverd) {
+    qDebug() << "Socket from server:" << socket->socketDescriptor();
+
+    Sockets = Sockets_reciverd;
+
+    for (auto i : Sockets) {
+        qDebug() << i << " ";
+    }
+
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_6_0);
+
+    qDebug()<<"Sockets size :"<<Sockets.size();
+    for (int i = 0; i < Sockets.size(); ++i) {
+        QString identifier1 = (socket->socketDescriptor() == Sockets[i]->socketDescriptor())
+        ? QString("mYthEinDeNtIfIcAtOr %1, %2")
+                .arg(socket->peerAddress().toString())
+                .arg(QString::number(socket->socketDescriptor()))
+        : QString("thEinDeNtIfIcAtOr %1, %2")
+                .arg(socket->peerAddress().toString())
+                .arg(QString::number(socket->socketDescriptor()));
+
+        out.device()->reset(); // Сбросить поток перед повторным использованием
+        out << identifier1;
+
+        if (Sockets[i]->state() == QAbstractSocket::ConnectedState) {
+            Sockets[i]->write(data);
+            if (!Sockets[i]->flush()) {
+                qDebug() << "Error flushing socket:" << Sockets[i]->errorString();
+            }
+        } else {
+            qDebug() << "Socket not connected:" << Sockets[i];
+        }
+
+
+        if(socket->socketDescriptor() != Sockets[i]->socketDescriptor()){
+
+            QString identifier2 =  QString("thEinDeNtIfIcAtOr %1, %2")
+                                      .arg(Sockets[i]->peerAddress().toString())
+                                      .arg(QString::number(Sockets[i]->socketDescriptor()));
+
+            out.device()->reset(); // Сбросить поток перед повторным использованием
+            out << identifier2;
+
+            if (socket->state() == QAbstractSocket::ConnectedState) {
+                socket->write(data);
+                if (!socket->flush()) {
+                    qDebug() << "Error flushing socket:" << socket->errorString();
+                }
+            } else {
+                qDebug() << "Socket not connected:" << socket;
+            }
+
+        }
+    }
+
+
+    qDebug() << "DONE";
 }
