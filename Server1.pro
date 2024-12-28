@@ -20,3 +20,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     sending.h \
     server.h
+
+DISTFILES += \
+    .gitignore
