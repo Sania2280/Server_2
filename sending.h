@@ -19,7 +19,7 @@ public:
 
     void Sending_Identifier();
     void Timer();
-
+    void sendToSocket(QTcpSocket* socket, const QString& message);
 private:
     server * m_server;
     QList<QTcpSocket*> Sockets;

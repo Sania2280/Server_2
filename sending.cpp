@@ -3,6 +3,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QMutex>
+#include <windows.h>
 
 QMutex mutex1;
 
@@ -90,7 +91,7 @@ void Sending::Sending_Identifier() {
     timer->start(1000);
 }
 
-void Sending::Get_New_Client(QTcpSocket* socket, QList<QTcpSocket *> Sockets_reciverd) {
+void Sending::Get_New_Client(QTcpSocket* socket, QList<QTcpSocket*> Sockets_reciverd) {
     qDebug() << "Socket from server:" << socket->socketDescriptor();
 
     Sockets = Sockets_reciverd;
@@ -99,59 +100,59 @@ void Sending::Get_New_Client(QTcpSocket* socket, QList<QTcpSocket *> Sockets_rec
         qDebug() << i << " ";
     }
 
-    QByteArray data;
-    QDataStream out(&data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_0);
+    // Отправляем идентификатор новому клиенту
+    QString MyIdentifier = QString("mYthEinDeNtIfIcAtOr %1, %2")
+                               .arg(socket->peerAddress().toString())
+                               .arg(QString::number(socket->socketDescriptor()));
+    sendToSocket(socket, MyIdentifier);
 
     qDebug() << "Sockets size :" << Sockets.size();
+
     for (int i = 0; i < Sockets.size(); ++i) {
-        if (Sockets[i]->state() != QAbstractSocket::ConnectedState) {
-            qDebug() << "Skipping disconnected socket:" << Sockets[i];
+        QTcpSocket* otherSocket = Sockets[i];
+
+        // Пропускаем отключенные сокеты
+        if (otherSocket->state() != QAbstractSocket::ConnectedState) {
+            qDebug() << "Skipping disconnected socket:" << otherSocket;
             continue;
         }
 
-        QString identifier1 = (socket->socketDescriptor() == Sockets[i]->socketDescriptor())
-                                  ? QString("mYthEinDeNtIfIcAtOr %1, %2")
-                                        .arg(socket->peerAddress().toString())
-                                        .arg(QString::number(socket->socketDescriptor()))
-                                  : QString("thEinDeNtIfIcAtOr %1, %2")
-                                        .arg(socket->peerAddress().toString())
-                                        .arg(QString::number(socket->socketDescriptor()));
-
-        out.device()->reset(); // Сбросить поток перед повторным использованием
-        out << identifier1;
-
-        if (Sockets[i]->state() == QAbstractSocket::ConnectedState) {
-            Sockets[i]->write(data);
-            if (!Sockets[i]->waitForBytesWritten()) {
-                qDebug() << "Error waiting for bytes to be written:" << Sockets[i]->errorString();
-            } else {
-                qDebug() << "Sending" << socket->socketDescriptor() << "to" << Sockets[i]->socketDescriptor();
-            }
-        } else {
-            qDebug() << "Socket not connected:" << Sockets[i];
+        // Пропускаем сам себя
+        if (socket->socketDescriptor() == otherSocket->socketDescriptor()) {
+            continue;
         }
 
-        if (socket->socketDescriptor() != Sockets[i]->socketDescriptor()) {
-            QString identifier2 = QString("thEinDeNtIfIcAtOr %1, %2")
-            .arg(Sockets[i]->peerAddress().toString())
-                .arg(QString::number(Sockets[i]->socketDescriptor()));
+        // Отправляем новому клиенту информацию о других сокетах
+        QString identifier1 = QString("thEinDeNtIfIcAtOr %1, %2")
+                                  .arg(otherSocket->peerAddress().toString())
+                                  .arg(QString::number(otherSocket->socketDescriptor()));
+        sendToSocket(socket, identifier1);
 
-            out.device()->reset(); // Сбросить поток перед повторным использованием
-            out << identifier2;
-
-            if (socket->state() == QAbstractSocket::ConnectedState) {
-                socket->write(data);
-                if (!socket->waitForBytesWritten()) {
-                    qDebug() << "Error waiting for bytes to be written:" << socket->errorString();
-                } else {
-                    qDebug() << "Sending" << Sockets[i]->socketDescriptor() << "to" << socket->socketDescriptor();
-                }
-            } else {
-                qDebug() << "Socket not connected:" << socket;
-            }
-        }
+        // Отправляем другим сокетам информацию о новом клиенте
+        QString identifier2 = QString("thEinDeNtIfIcAtOr %1, %2")
+                                  .arg(socket->peerAddress().toString())
+                                  .arg(QString::number(socket->socketDescriptor()));
+        sendToSocket(otherSocket, identifier2);
     }
 
     qDebug() << "DONE";
+}
+
+void Sending::sendToSocket(QTcpSocket* socket, const QString& message) {
+    if (socket->state() != QAbstractSocket::ConnectedState) {
+        qDebug() << "Socket not connected:" << socket->socketDescriptor();
+        return;
+    }
+
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_6_0);
+    out << message;
+
+    socket->write(data);
+    if (!socket->waitForBytesWritten()) {
+        qDebug() << "Error waiting for bytes to be written:" << socket->errorString();
+    } else {
+        qDebug() << "Message sent to socket:" << socket->socketDescriptor() << message;
+    }
 }
